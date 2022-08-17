@@ -31,6 +31,38 @@ async function menu() {
 
 }
 
+async function placesMenu(places) {
+
+    const choices = places.map((place, index )=> {
+
+        const idx = `${index + 1}.`.green;
+
+        return {
+            value: place.id,
+            name: `${idx} ${place.name}`,
+        }
+    });
+
+    choices.unshift({
+        value: '0',
+        name: '0.'.green + ' Exit'
+    });
+
+    const questions = [
+        {
+            type: 'list',
+            name: 'place',
+            message: 'What place are you looking for?',
+            choices,
+        }
+    ];
+
+    console.clear();
+    const { place } = await inquirer.prompt(questions);
+    return place;
+
+}
+
 async function pause() {
 
     const question = [
@@ -68,5 +100,6 @@ async function readInput(message) {
 module.exports = {
     menu,
     readInput,
-    pause
+    pause,
+    placesMenu
 }
