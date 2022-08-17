@@ -18,7 +18,14 @@ async function main() {
                 const place = await readInput('Type the city: ');
                 const cities = await service.find(place);
                 const selectedId = await placesMenu(cities);
+
+                if(selectedId === '0') {
+                    continue;
+                }
+
                 const choosenCity = cities.find(c => c.id == selectedId);
+
+                await service.saveHistory(choosenCity.name);
 
                 const weather = await service.findWeather(choosenCity.lng, choosenCity.lat);
 
@@ -33,6 +40,10 @@ async function main() {
                 break;
 
             case 2:
+                service.history.forEach((place, index) => {
+                    const idx = `${index + 1}`.green;
+                    console.log(`${idx}. ${place}`)
+                })
                 break;
         }
 

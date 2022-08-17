@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const axios = require('axios');
 
 const config = require('../config/config');
@@ -5,6 +7,21 @@ const config = require('../config/config');
 class SearchService {
 
     constructor() {
+        this.filePath = './db/data.json'
+        this.history = this.loadData();
+    }
+
+
+    loadData() {
+        let data = fs.readFileSync(this.filePath).toString();
+        
+        if(!data) {
+            return [];
+        }
+
+        data = JSON.parse(data);
+
+        return data.history;
     }
 
     async find(place) {
@@ -62,6 +79,23 @@ class SearchService {
         }
     }
 
+    async saveHistory(place) {
+
+        if(this.history.includes(place.toLowerCase())) {
+            return false;
+        }
+
+        if(this.history.length === 5) {
+            this.history.pop();
+        }
+
+        const payload = {
+            history: this.history
+        }
+
+        this.history.unshift(place.toLowerCase());
+        fs.writeFileSync(this.filePath, JSON.stringify(payload));
+    }
 }
 
 module.exports = {
